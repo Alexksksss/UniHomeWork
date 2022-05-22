@@ -1,0 +1,250 @@
+
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <locale.h>
+#include <array>
+#include <stdio.h>
+#include "library-litvak.h"
+using namespace std;
+
+void PrintMatrix(int** M, int n) //вывод матрицы
+{
+	for (int i = 0; i < n; i++, puts("\n"))
+		for (int j = 0; j < n; j++)
+			printf("%5d", M[i][j]);
+}
+//Функция подсчета суммы элементов в строке матрицы
+int MaxRowCost(int** N, int n, int i)
+{
+	int sum = 0;
+	for (int j = 0; j < n; j++)
+	{
+		sum += N[i][j];
+	}
+	return sum;
+}
+
+//Функция удаления элементов строки и столбца по заданному элементу
+void deleteRawColumn(int** N, int Raw, int Column, int n)
+{
+	for (int i = 0; i < n; i++)
+	{
+		N[Raw][i] = 0;
+		N[i][Column] = 0;
+	}
+	N[Column][Raw] = 0;
+}
+
+//Функция проверки матрицы на содержание нулей
+int MatrixCheck(int** N, int n)
+{
+	int sum = 0;
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+		{
+			sum += N[i][j];
+		}
+	}
+	return sum;
+}
+
+//Функция проверки гамильтонового цикла на полноту 
+bool DCycleCheck(int* Towns, int n, int minColumn, int maxRow)
+{
+	int i = 0, j, start = maxRow, finish = minColumn;       //Хотим пойти из start в finish
+	for (j = 0; j < n; j++)                                 //Проходим по всему массиву Towns и ожидаем 2 случая:
+	{
+		i = Towns[minColumn];                               //1) В массиве Towns встретили -1 - город не был посещен, выходим с true
+		if (i == -1) return true;                           //2) Проходя по массиву Towns получилось так, что "start"..."start" =>
+		minColumn = i;                                      // выходим с false
+		if (i == start) { cout << "Дуга (" << start << "," << finish << ") образует цикл! "; return false; }
+	}
+
+}
+int main()
+{
+start:
+	srand(time(NULL));
+	setlocale(LC_ALL, "Russian");
+	//Создание необходимых переменных и массивов
+	int n;                    //Кол-во городов
+	int** M;                   //Матрица путей
+	int k;                    //Город отправления
+	int minSum;                  //Минимальная стоимость проезда
+	int Count = 1; int minCount = 1;      //Номер текущей перестановки и номер минимальной по стоимости перестановки
+
+	clock_t start, stop; double T1, T2;        //Создаем таймер
+
+	cout << "Точное решение задачи коммивояжера" << endl
+		<< "Введите исходное количество городов: ";
+	cin >> n;
+	M = new int*[n];
+
+	for (int i = 0; i < n; i++) {
+		M[i] = new int[n];
+	}
+	cout << "Создаем матрицу стоимости проезда по городам:" << endl << endl;
+
+	int* P = new int[n];			    //Выделяем память под перестановки
+	int* Pmin = new int[n];             //Выделяем память под min перестановку
+	for (int i = 0; i < n; i++) {		// создание матрицы стоимости
+		for (int j = 0; j < n; j++) {
+			if (i == j) M[i][j] = 0;
+			else cin >> M[i][j];
+		}
+	}
+
+	PrintMatrix(M, n);          //И выводим матрицу стоимости путей
+	cout << endl;
+
+	cout << "Введите город отправления k: ";
+	cin >> k;
+
+	start = clock();
+	cout << "Маршруты:\tСтоимость:" << endl;
+
+	P[0] = k;                  //Заполняем первоначальную перестановку
+	for (int i = 1; i < n; i++)          //В виде k0123...(k-1)(k+1)...(n-1)
+	{
+		P[i] = i - 1;
+		if (i >= k + 1) { P[i] = i; }
+	}
+
+	cout << Count << ". "; Count++;
+
+	for (int i = 0; i < n; i++)          //Выводим первоначальную перестановку
+	{
+		cout << P[i];
+	}
+
+	cout << "\t\t";
+
+	minSum = Cost(P, M, n);          //Определяем стоимость первой перестановки и выводим её
+	cout << minSum << endl;
+
+	for (int i = 0; i < n; i++)          //Сохраняем начальный маршрут как минимальный
+	{
+		Pmin[i] = P[i];
+	}
+
+	while (Permutation(P, n))          //Пока удается создать новую перестановку
+	{
+		cout << Count << ". ";
+
+		for (int i = 0; i < n; i++)        //Выводим новую перестановку
+		{
+			cout << P[i];
+		}
+		cout << "\t\t" << Cost(P, M, n);  //Выводим стоимость новой перестановки    
+		cout << endl;
+		if (Cost(P, M, n) < minSum)      //Если новая перестановка "дешевле"
+		{
+			for (int i = 0; i < n; i++)
+			{
+				Pmin[i] = P[i];          //Сохраняем её в качестве минимальной        
+			}
+			minCount = Count;          //Сохраняем номер min перестановки
+			minSum = Cost(P, M, n);      //И сохраняем её минимальную стоимость
+		}
+		Count++;
+	}
+	stop = clock();
+	T1 = (stop - start + .0) / CLOCKS_PER_SEC;
+
+	cout << "Перестановка минимальной находится стоимости под номером " << minCount << ": ";
+
+	for (int i = 0; i < n; i++)          //Вывод перестановки min стоимости и её стоимости
+	{
+		cout << Pmin[i];
+	}
+
+	cout << endl << "Её минимальная стоимость: " << minSum << endl << endl;
+	
+	//-----Вторая эвристика----- 
+
+	cout << "Второй эвристический алгоритм:" << endl;
+	cout << "В строке с максимальной суммой дуг, выбираем минимальную дугу" << endl << endl;
+
+	start = clock();
+
+	int* Towns = new int[n];    //Массив посещенных городов для проверки зацикливания
+	for (int i = 0; i < n; i++)
+	{
+		Towns[i] = -1;
+	}
+
+	int FinalWay = 0;        //Длина конечного пути
+	int count = 1;          //Счетчик шагов
+	while (MatrixCheck(M, n) != 0)  //Пока в матрице есть элементы
+	{
+		cout << "Шаг №" << count << endl;
+		PrintMatrix(M, n);  //Печатаем текущую матрицу
+		int maxSum = 0;                      //Возьмем max строку меньше минимального - 0
+		int maxRow = 0;
+		for (int i = 0; i < n; i++)
+		{
+			if (MaxRowCost(M, n, i) > maxSum)
+			{
+				maxSum = MaxRowCost(M, n, i);          //Поиск max строки, откуда едем
+				maxRow = i;                    //Если сумма строки > предыдущей она max
+			}                          //Запоминаем индекс
+		}
+
+		int minWay = 101;                    //Возьмем min дугу больше максимального - 100
+		int minColumn = 0;
+
+			for (int j = 0; j < n; j++)
+			{
+				if (M[maxRow][j] < minWay && M[maxRow][j] != 0)      //Поиск min элемента в max строке, куда едем
+				{
+					if (count == n || DCycleCheck(Towns, n, j, maxRow))  //Проверка на зацикливание, учитывая, что последняя дуга всегда
+					{                          //образует цикл
+						Towns[maxRow] = j;                //Записываем город в массив посещенных городов
+						minColumn = j;                  //Запоминаем индекс минимальной дуги
+						minWay = M[maxRow][j];              //Запоминаем длину минимальной дуги
+					}
+				}
+			}
+		FinalWay += minWay;
+		deleteRawColumn(M, maxRow, minColumn, n);
+		count++;
+		cout << "Добавляем дугу (" << maxRow << "," << minColumn << ")" << endl << endl;
+	}
+	stop = clock();
+	T2 = (stop - start + .0) / CLOCKS_PER_SEC;
+
+	//-----Вторая эвристика----- 
+
+	cout << endl << "Длина пути точного решения: " << minSum << endl;
+	cout << "Длина пути по второму эвристическому алгоритму: " << FinalWay << endl;
+	cout << "Получены дуги:";
+	for (int i = 0; i < n; i++)
+	{
+		cout << "(" << i << "," << Towns[i] << ") ";
+	}
+	cout << endl << "Маршрут: " << k;
+	for (int a = 0; a < n - 1; a++)
+	{
+		cout << Towns[k];
+		k = Towns[k];
+	}
+	cout << endl << endl;
+
+	cout << "Время работы точного решения: " << T1 << endl <<
+		"Время работы второго эвристического алгоритма: " << T2 << endl <<
+		"P.S. Вывод матриц на экран задействует достаточно много времени" << endl << endl;
+
+	delete[]P;
+	delete[]M;                  //Очистка памяти 
+	delete[]Pmin;
+
+
+	cout << "Хотите запустить программу заново? (y - да, любая другая клавиша - выйти из программы)" << endl;
+	char ch;                  //Повторный запуск программы
+	cin >> ch;
+	if (ch == 'y') { system("cls"); goto start; }
+
+	return(0);
+}
