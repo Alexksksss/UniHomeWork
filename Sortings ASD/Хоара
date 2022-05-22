@@ -1,0 +1,56 @@
+
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <locale.h>
+#include <array>
+#include <stdio.h>
+#include "library.h"
+using namespace std;
+
+void Algorithm(int arr[], int l, int r)
+{
+	int i = l, j = r;
+	int xm = arr[(l + r) / 2];
+	while (i <= j) {
+		while (arr[i] < xm)
+			i++;
+		while (arr[j] > xm)
+			j--;
+		if (i <= j)
+		{
+			if (i < j)
+				swap(&arr[i], &arr[j]);
+			i++;
+			j--;
+		}
+	}
+	if (i < r)
+		Algorithm(arr, i, r);
+	if (l < j)
+		Algorithm(arr, l, j);
+}
+int main()
+{
+start:
+	setlocale(LC_ALL, "russian");
+	int n;
+	cout << "Enter n: ";
+	cin >> n;
+	int* arr = new int[n];
+	cout << "Array: ";
+	RandMas(arr, n, 0, 200);
+	PrintMas(arr, n);
+
+	Algorithm(arr, 0, n - 1);
+	cout <<endl << "Sorted Array: ";
+	PrintMas(arr, n);
+	delete[] arr;
+	cout << endl << endl;
+	cout << "Хотите запустить программу заново? (y - да, любая другая клавиша - выйти из программы)" << endl;
+	char ch;                  //Повторный запуск программы
+	cin >> ch;
+	if (ch == 'y') { system("cls"); goto start; }
+	cout << endl << endl;
+	return 0;
+}
