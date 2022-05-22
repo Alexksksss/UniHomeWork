@@ -1,0 +1,59 @@
+
+#include <iostream>
+#include <locale.h>
+#include <time.h>
+#include "library.h"
+using namespace std;
+
+void Shell(int* mas, int n) {
+	int* k, i, size, l , temp, s, o, m;
+	m = n / 2;
+	k = new int[m];
+	k[m - 1] = 0;
+	i = 0;
+	k[0] = 1;
+	while (3*k[i] < n) {//Заполняем массив расстояний по формуле Сэджвика
+		i++;
+		if (i % 2 == 0)		k[i] = 9 * pow(2, i) - 9 * pow(2, i / 2) + 1;
+		if (i % 2 != 0)		k[i] = 8 * pow(2, i) - 6 * pow(2, (i + 1) / 2) + 1;
+	} 
+	size = i - 1;//size -размер массива 
+	for (i = size; i >= 0; i--) {
+		s = k[i];
+		for (o = 0; o < s; o++) {
+			for (int j = o + s; j < n; j = j + s) {
+				temp = mas[j];
+				// Двигаем элементы, пока не дойдем до конца или не упорядочим
+				for (l = j - s; l >= 0 && mas[l] > temp; l = l - s)  mas[l + s] = mas[l];
+				mas[l + s] = temp;
+			}
+		}
+	}
+}
+int main()
+{	begin:
+	setlocale(LC_ALL, "russian");
+	int n;
+	cout << "Введите n: ";
+	cin >> n;
+	int* mas = new int[n];
+	cout << "Изначальный массив:     ";
+	RandMas(mas, n,0,100);
+	PrintMas(mas, n);
+	Shell(mas, n);
+	cout << endl;
+	cout << "Отсортированный массив: ";
+	PrintMas(mas, n);
+
+	cout << endl;
+	cout << endl << "Если хотите запустить программу повторно, введите (+)";
+	char c;
+	cin >> c;
+	while (cin.get() != '\n');
+	if (c == '+') {
+		goto begin;
+	}
+	delete[] mas;
+	system("pause");
+	return 0;
+}
