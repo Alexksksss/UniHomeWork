@@ -1,0 +1,55 @@
+
+	#include <stdio.h>
+	#include <string.h>
+	#include <time.h>
+	#include <string>
+	#include "Library.h"
+  
+void SortBubble(int *a, int n) {
+	int temp;
+	for (int i = 0; i < n - 1; i++) {
+		for (int j = 0; j < n - i - 1; j++) {
+			if (a[j] > a[j + 1]) {
+				temp = a[j];
+				a[j] = a[j + 1];
+				a[j + 1] = temp;
+			}
+		}
+	}
+}
+	int main()
+	{
+		srand(time(0));
+		int n;
+		int k;
+		printf("enter n: ");
+		scanf_s("%d", &n);
+		int l = 0, r = n - 1;
+		int *a = new int[n];
+		Vvod(a, n);
+		SortBubble(a, n);
+		Vyvod(a, n);
+		printf("enter k: ");
+		scanf_s("%d", &k);
+		while (true) {
+			int m = (l+r) / 2;
+			if (k < a[m])
+				r = m - 1;
+			else if (k > a[m])
+				l = m + 1;
+			else if (k = a[m]) {
+				printf("k= a[");
+				printf("%d", m);
+				printf("]");
+				printf(" \n");
+				break;
+			}
+			if (l > r) {
+				printf("v massive net k");
+				break;
+			}
+		}
+		delete[]a;
+		system("pause");
+		return(0);
+	}
