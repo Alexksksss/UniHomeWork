@@ -1,0 +1,106 @@
+
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <locale.h>
+#include <array>
+#include <stdio.h>
+#include "library.h"
+using namespace std;
+
+void PrintMatrix(int** a, int n) //вывод матрицы
+{
+	for (int i = 0; i < n; i++, puts("\n"))
+		for (int j = 0; j < n; j++)
+			printf("%5d", a[i][j]);
+}
+
+
+
+void Alg(int** mas, int n) {//minPoint -минимальный номер,min-массив  путей,nmin-минимальный эл,
+	int sum = 0, *min, minPoint, nmin, w = 0;
+
+	min = new int[n + 1]; //память выделение
+	min[0] = 0;
+	int i = 0;
+
+	while (w < n) {
+		nmin = INT_MAX;//к1
+		minPoint = n;
+		w++;
+		int l;
+		for (int j = 0; j < n; j++) { //поиск минимального 
+			if (mas[i][j] > 0 && mas[i][j] < nmin) {
+				nmin = mas[i][j];
+				minPoint = j;
+				l = i;
+			}
+		}
+		mas[minPoint][l] = 0;
+		for (int t = 0; t < n; t++) { //очистка строк столбов
+			mas[i][t] = 0;
+			mas[t][minPoint] = 0;
+		}
+
+		if (w < n - 1) {
+			mas[minPoint][0] = 0;
+		}
+
+		min[w] = minPoint;
+		i = minPoint;
+		sum += nmin;
+		cout << endl;
+		PrintMatrix(mas, n);
+	}
+	cout << "Минимальный путь: \n";
+	for (i = 0; i < n; i++) {
+		cout << min[i] + 1 << " --- ";
+	}
+
+	cout << min[0] + 1 << "\nМиниальная сумма: " << sum << endl;
+	delete[] min; //очистка памяти
+}
+
+
+
+int main() {
+begin:
+	setlocale(LC_ALL, "russian");
+	int** mas, n;
+
+	cout << "Введите количество городов: ";
+	cin >> n;
+	mas = new int*[n];
+
+	for (int i = 0; i < n; i++) {
+		mas[i] = new int[n];
+	}
+	srand(time(NULL));
+	for (int i = 0; i < n; i++) {// создание матрицы стоимости
+		for (int j = 0; j < n; j++) {
+			if (i == j) mas[i][j] = 0;
+			else cin>> mas[i][j];
+		}
+	}
+
+	cout << "\nМатрица стоимости: \n";
+	PrintMatrix(mas, n);
+
+	Alg(mas, n);
+
+	for (int i = 0; i < n; i++) {//удаление
+		delete[] mas[i];
+	}
+	delete[] mas;
+	cout << endl << "Если хотите запустить программу повторно, введите (+)";
+	char c;
+	cin >> c;
+	if (c == '+') {
+		//system("cls");//очистка консоли
+		goto begin;
+	}
+	cout << endl;
+	system("pause");
+	return 0;
+}
+
