@@ -1,0 +1,44 @@
+
+	#include <stdio.h>
+	#include <string.h>
+	#include <time.h>
+	#include <string>
+	#include "Library.h"
+
+	int main()
+	{
+		int flag = 0;
+		int n = 0;
+		printf("enter s, enter p: ");
+		char s[1000];
+		char p[20];
+		printf(" \n");
+		gets_s(s);
+		gets_s(p);
+		int ks=strlen(s);//n
+		int kp = strlen(p);//m
+		for (int i = 0, flag = 0 ; ; i++) {
+			if ((i > ks - kp) || (flag != 0))
+			{
+				if (flag == 1) n=1;
+				else n=10;
+			}
+			if ((i <= ks - kp) && (flag == 0)) {
+				for (int j = 0; j < kp; j++) {
+					if ((s[i + j] != p[j])||(j>=kp-1))
+					{
+						if (j == kp-1)
+							flag = 1;
+						else break;
+
+					}
+				}
+			}
+			else break;
+		}
+	if (n == 1)
+		printf("YES");
+	else printf("NO");
+	printf(" \n");
+	return(0);
+	}
