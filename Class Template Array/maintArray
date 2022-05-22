@@ -1,0 +1,200 @@
+
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <locale.h>
+#include <stdio.h>
+#include "library-litvak.h"
+using namespace std;
+
+int main() {
+	cout << endl << "		   CHAR	     	" << endl;
+	//1
+	Arr <char> mas1;
+	mas1.Scan(5);
+	cout << endl << "		TASK1		" << endl<< "mas 1 = ";
+	mas1.Print();
+
+	//2
+	cout << endl << "		TASK2		" << endl<<"mas 2 = ";
+	Arr <char> mas2=mas1;
+	cout << mas2;
+	//3
+	cout <<endl<< "		TASK3		"<<endl;
+	if (mas1 == mas2) cout << "Arrays 1 and 2 are Equ";
+	else cout << "Arrays 1 and 2 are not Equ";
+	cout << endl;
+	//4
+	cout << endl << "		TASK4		" << endl << "mas 1 = ";
+	mas1 += '6';
+	cout << mas1 << endl;;
+	if (mas1 == mas2) cout << "Arrays 1 and 2 are Equ";
+	else cout << "Arrays 1 and 2 are not Equ";
+	cout << endl;
+	//5
+	cout << endl << "		TASK5		" << endl<<"mas 3 = ";
+	Arr <char> mas3 = mas1 + '7';
+	cout <<  mas3 << endl;
+	//6
+	cout << endl << "		TASK6		" << endl << "mas 3 = ";
+	mas3.DelPosEq(0);
+	cout << mas3;
+	//7
+	Arr <char> mas4 = mas3.DelPosNew(5);
+	cout << endl << "		TASK7		" << endl << "mas 4 = ";
+	cout << mas4;
+	//8
+	cout << endl << "		TASK8		" << endl << "mas 1 = ";
+	mas1 -= '1';
+	cout << mas1;
+	if (mas1 == mas4) cout << "Arrays 1 and 4 are Equ";
+	else cout << "Arrays 1 and 4 are not Equ";
+	//9
+	int n;
+	char *b;
+	cout << endl << "		TASK9		" << endl;
+	cout << "Enter n ";
+	cin >> n;
+	b = new char[n];
+	srand(time(0));
+	for (int i = 0; i < n; i++) b[i] = rand() % 26+97;
+	cout << "mas 5 = ";
+	Arr <char> mas5(b, n);
+	cout << mas5;
+	//10
+	int nmin, nmax;
+	cout << endl << "		TASK10		" << endl;
+	nmax = mas5.Max();
+	nmin = mas5.Min();
+	int imax = mas5[nmax];
+	int imin = mas5[nmin];
+	cout << "nmax= " << nmax << " max= " << mas5[nmax] << " max(ASCII)= " << imax << endl;
+	cout << "nmin= " << nmin << " min= " << mas5[nmin] << " min(ASCII)= " << imin << endl;
+	//11
+	cout << endl << "		TASK11		" << endl;
+	mas5.Sorting();
+	cout << "mas 5 = " << mas5;
+	//12
+	Arr <char> mas6 = mas1 + mas5;
+	cout << endl << "		TASK12		" << endl << "mas 6 = " << mas6;
+	//13
+	Arr <char> mas7(4);
+	cout << endl << "		TASK13		" << endl;
+	cin >> mas7;
+	cout << "mas 7 = ";
+	cout << mas7;
+	//14
+	cout << endl << "		TASK14		" << endl;
+	if (mas7.FindKey('z') == -1) cout << "There is no z in mas 7";
+	else cout << "There is z in mas 7";
+	cout << endl;
+	if(mas7.FindKey('a')==-1) cout << "There is no a in mas 7";
+	else cout << "There is a in mas 7";
+	Arr <char> mas8 = mas7 - 'a';
+	cout << endl << "mas 8 = " << mas8;
+	//15
+	mas4 += mas7;
+	cout << endl << "		TASK15		" << endl << "mas 4 = " << mas4;
+	if (mas4 == mas6) cout << "Arrays 4 and 6 are Equ";
+	else cout << "Arrays 4 and 6 are not Equ";
+	//16
+	mas4 = mas6;
+	cout << endl << "		TASK16		" << endl << "mas 4 = " << mas4;
+	
+
+
+	cout << endl << "		   FLOAT	     	" << endl;
+	//1
+	Arr <float> masf1;
+	masf1.Scan(5);
+	cout << endl << "		TASK1		" << endl << "mas 1 = ";
+	masf1.Print();
+
+	//2
+	cout << endl << "		TASK2		" << endl << "mas 2 = ";
+	Arr <float> masf2 = masf1;
+	cout << masf2;
+	//3
+	cout << endl << "		TASK3		" << endl;
+	if (masf1 == masf2) cout << "Arrays 1 and 2 are Equ";
+	else cout << "Arrays 1 and 2 are not Equ";
+	cout << endl;
+	//4
+	cout << endl << "		TASK4		" << endl << "mas 1 = ";
+	masf1 += 6;
+	cout << masf1 << endl;;
+	if (masf1 == masf2) cout << "Arrays 1 and 2 are Equ";
+	else cout << "Arrays 1 and 2 are not Equ";
+	cout << endl;
+	//5
+	cout << endl << "		TASK5		" << endl << "mas 3 = ";
+	Arr <float> masf3 = masf1 + 7;
+	cout << masf3 << endl;
+	//6
+	cout << endl << "		TASK6		" << endl << "mas 3 = ";
+	masf3.DelPosEq(0);
+	cout << masf3;
+	//7
+	Arr <float> masf4 = masf3.DelPosNew(5);
+	cout << endl << "		TASK7		" << endl << "mas 4 = ";
+	cout << masf4;
+	//8
+	cout << endl << "		TASK8		" << endl << "mas 1 = ";
+	masf1 -= 1;
+	cout << masf1;
+	if (masf1 == masf4) cout << "Arrays 1 and 4 are Equ";
+	else cout << "Arrays 1 and 4 are not Equ";
+	//9
+	int nf;
+	float *bf;
+	cout << endl << "		TASK9		" << endl;
+	cout << "Enter n ";
+	cin >> nf;
+	bf = new float[nf];
+	srand(time(0));
+	for (int i = 0; i < nf; i++) bf[i] = rand() / float(200);
+	cout << "mas 5 = ";
+	Arr <float> masf5(bf, nf);
+	cout << masf5;
+	//10
+	int nminf, nmaxf;
+	cout << endl << "		TASK10		" << endl;
+	nmaxf = masf5.Max();
+	nminf = masf5.Min();
+	cout << "nmax= " << nmaxf << " max= " << masf5[nmaxf] << endl;
+	cout << "nmin= " << nminf << " min= " << masf5[nminf] << endl;
+	//11
+	cout << endl << "		TASK11		" << endl;
+	masf5.Sorting();
+	cout << "mas 5 = " << masf5;
+	//12
+	Arr <float> masf6 = masf1 + masf5;
+	cout << endl << "		TASK12		" << endl << "mas 6 = " << masf6;
+	//13
+	Arr <float> masf7(4);
+	cout << endl << "		TASK13		" << endl;
+	cin >> masf7;
+	cout << "mas 7 = ";
+	cout << masf7;
+	//14
+	cout << endl << "		TASK14		" << endl;
+	if (masf7.FindKey(1) == -1) cout << "There is no 1 in mas 7";
+	else cout << "There is 1 in mas 7";
+	cout << endl;
+	if (masf7.FindKey(10.1) == -1) cout << "There is no 10.1 in mas 7";
+	else cout << "There is 10.1 in mas 7";
+	Arr <float> masf8 = masf7 - 10.1;
+	cout << endl << "mas 8 = " << masf8;
+	//15
+	masf4 += masf7;
+	cout << endl << "		TASK15		" << endl << "mas 4 = " << masf4;
+	if (masf4 == masf6) cout << "Arrays 4 and 6 are Equ";
+	else cout << "Arrays 4 and 6 are not Equ";
+	//16
+	masf4 = masf6;
+	cout << endl << "		TASK16		" << endl << "mas 4 = " << masf4;
+
+	cout << endl;
+	system("pause");
+	return 0;
+}
