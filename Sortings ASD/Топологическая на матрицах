@@ -1,0 +1,67 @@
+#include "library.h"
+#include <locale.h>
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <array>
+#include <Windows.h>
+#include <string.h>
+using namespace std;
+
+int main()
+{
+start:
+	setlocale(LC_ALL, "russian");
+	int n;
+	cout << "Enter n: ";
+	cin >> n;
+	char** s;
+	s = new char*[n];
+	for (int i = 0; i < n; i++)
+		s[i] = new char[n+1];
+
+	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(h, (7 << 4) + 0);
+	cout << "000101000" << endl << "101000100" << endl << "000100000" << endl << "000000000" << endl << "001000000" << endl << "000010000" << endl << "000000010" << endl << "000010000" << endl << "000111000" << endl;
+	SetConsoleTextAttribute(h, (0 << 4) + 15);
+	for (int i = 0; i < n; i++)
+		cout << "-";
+	cout << endl;
+	SetConsoleTextAttribute(h, (8 << 4) + 15);
+	cout << "010010100" << endl << "000001000" << endl << "000000001" << endl << "010000010" << endl << "001000000" << endl << "000000000" << endl << "000100000" << endl << "001001001" << endl << "000001000" << endl;
+	SetConsoleTextAttribute(h, (0 << 4) + 15);
+
+	BoolMatrix bm(n, n);
+	cout << "Enter Matrix:" << endl;
+	cin >> bm;
+	BoolVector v0(n), v1(n), d(n), w(n);
+	int *res = new int[n];
+	cout << "Matrix: " << endl;
+	cout << bm;
+	int i = 0;
+	for (int k = 0; k < n; k++) {
+		d = bm.Disj();
+		w = ~d;
+		v1 = v0 ^ w;
+		for (int j = 0; j < n; j++)
+			if (v1[n - j - 1])
+			{
+				res[i] = j + 1;
+				i++;
+				bm.SetUp0(j, 0, n);
+			}
+		v0 = w;
+	}
+
+	cout << "res = ";
+	PrintMas(res, n);
+	delete[] s;
+	delete[] res;
+	cout << endl << endl;
+	cout << "Хотите запустить программу заново? (y - да, любая другая клавиша - выйти из программы)" << endl;
+	char ch;
+	cin >> ch;
+	if (ch == 'y') { system("cls"); goto start; }
+	cout << endl << endl;
+	return 0;
+}
