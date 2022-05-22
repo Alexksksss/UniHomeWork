@@ -4,7 +4,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <array>
-#include "library-litvak.h"
+#include "OSBT.h"
 using namespace std;
 int main() {
 	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
