@@ -1,0 +1,171 @@
+
+#include <locale.h>
+#include <iostream>
+#include <Windows.h>
+#include <cstdlib>
+#include <ctime>
+#include <array>
+#include "library.h"
+using namespace std;
+
+void Integr(FILE* A0, FILE* A1, FILE* B0, FILE* B1, int p) {//F=A G=B
+	int x0, x1;
+	fscanf_s(A0, "%d", &x0);//1
+	fscanf_s(A1, "%d", &x1);//2
+	int i, j;
+	int n = 0;//==0
+	while ((!feof(A0))&& (!feof(A1))) {//4
+		i = 0; j = 0;
+		while ((!feof(A0)) && (!feof(A1))&&(i<p)&&(j<p)) {//4.2
+			if (x0 < x1) {
+				if (n == 0) 
+					fprintf(B0, "%d ", x0);
+				else fprintf(B1, "%d ", x0);
+				fscanf_s(A0, "%d", &x0);
+				i++;
+			}
+			else {
+				if (n == 0)
+					fprintf(B0, "%d ", x1);
+				else fprintf(B1, "%d ", x1);
+				fscanf_s(A1, "%d", &x1);
+				j++;
+			}
+		}
+		while ((!feof(A0)) && (i < p)) {//4.3
+			if (n == 0)
+				fprintf(B0, "%d ", x0);
+			else fprintf(B1, "%d ", x0);
+			fscanf_s(A0, "%d", &x0);
+			i++;
+		}
+		while ((!feof(A1)) && (j < p)) {//4.4
+			if (n == 0)
+				fprintf(B0, "%d ", x1);
+			else fprintf(B1, "%d ", x1);
+			fscanf_s(A1, "%d", &x1);
+			j++;
+		}
+		n = 1 - n;//4.5
+	}
+	while (!feof(A0)) {//5
+		if (n == 0)
+			fprintf(B0, "%d ", x0);
+		else fprintf(B1, "%d ", x0);
+		fscanf_s(A0, "%d", &x0);
+	}
+	while (!feof(A1)) {//6
+		if (n == 0)
+			fprintf(B0, "%d ", x1);
+		else fprintf(B1, "%d ", x1);
+		fscanf_s(A1, "%d", &x1);
+	}
+}
+
+int main(){
+	srand(time(NULL));
+	FILE* A; FILE* F0; FILE* F1; FILE* G0; FILE* G1;
+	int k,a;
+	int p = 1;
+	cout << "Enter k: ";
+	cin >> k;
+	fopen_s(&A, "E:\\A.txt", "w");
+	//создание рандомного файла А
+	for (int i = 0; i < k; i++) {
+		a = rand() % 100;
+		//if (i != k - 1)
+			fprintf(A, "%d ", a);
+		//else fprintf(A, "%d", a);//для "удаления" последнего пробела 
+	}
+	_fcloseall();
+
+	fopen_s(&F0, "E:\\F0.txt", "w");
+	fopen_s(&F1, "E:\\F1.txt", "w");
+	fopen_s(&G0, "E:\\G0.txt", "w");
+	fopen_s(&G1, "E:\\G1.txt", "w");//Для создания файлов
+	_fcloseall();
+	
+	//Вывод исходного массива
+	fopen_s(&A, "E:\\A.txt", "r");
+	cout << "Start Array: "; 
+
+	fscanf_s(A, "%d", &a);
+	while (!feof(A)) {
+		cout << a << " ";
+		fscanf_s(A, "%d", &a);
+	}
+	cout << endl;
+	_fcloseall();
+
+	//2 разбиение по 1
+	fopen_s(&A, "E:\\A.txt", "r");
+	fopen_s(&F0, "E:\\F0.txt", "w");
+	fopen_s(&F1, "E:\\F1.txt", "w");
+	int f = 1;
+	fscanf_s(A, "%d", &a);
+	while (!feof(A)) {
+		//fscanf_s(A, "%d", &a);
+		if (f % 2 != 0) 
+			fprintf(F0, "%d ", a);
+		else fprintf(F1, "%d ", a);
+		f++;
+		fscanf_s(A, "%d", &a);
+	}
+	_fcloseall();
+	//3
+	int flag1 = 1, flag2 = 0;
+	//4
+	
+	while (flag1 == 1) {
+		if (flag2 == 0) {//4.1
+			fopen_s(&F1, "E:\\F1.txt", "r");
+			if (getc(F1) != EOF) { //4.1.1
+				fopen_s(&F0, "E:\\F0.txt", "r");
+				fopen_s(&F1, "E:\\F1.txt", "r");
+				fopen_s(&G0, "E:\\G0.txt", "w");
+				fopen_s(&G1, "E:\\G1.txt", "w");
+				//сливаем с шагом p
+				Integr(F0, F1, G0, G1, p);
+				_fcloseall();
+				flag2 = 1;
+			}
+			else flag1 = 0;
+			fopen_s(&G1, "E:\\G1.txt", "r");
+			if (getc(G1) != EOF) { //4.1.2
+				fopen_s(&F0, "E:\\F0.txt", "w");
+				fopen_s(&F1, "E:\\F1.txt", "w");
+				fopen_s(&G0, "E:\\G0.txt", "r");
+				fopen_s(&G1, "E:\\G1.txt", "r");
+				//сливаем с шагом p
+				Integr(G0, G1, F0, F1, p);
+				_fcloseall();
+				flag2 = 0;
+			}
+			else 
+				flag1 = 0;
+		}
+		p = 2 * p;//4.2
+	}
+	if (flag2 == 0) {//5
+        cout << "Result in F0" << endl;
+        fopen_s(&F0, "E:\\F0.txt", "r");
+        while (!feof(F0)) {
+            fscanf_s(F0, "%d ", &a);
+            cout << a << " ";
+        }
+        cout << endl;
+    }
+    else {
+        cout << "Result in G0" << endl;
+        fopen_s(&G0, "E:\\G0.txt", "r");
+        while (!feof(G0)) {
+            fscanf_s(G0, "%d ", &a);
+            cout << a << " ";
+        }
+        cout << endl;
+    }
+    
+    _fcloseall();
+    cout << endl << endl;
+    return 0;
+}
