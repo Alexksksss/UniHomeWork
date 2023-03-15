@@ -3,4 +3,4 @@ My university homeworks
 
 
 Litvak Aleksandra
-tg: hAlexksksss
+tg: Alexksksss
